@@ -1,0 +1,226 @@
+{
+  "info": {
+    "_postman_id": "83239d48-a8aa-496d-9c9b-2b2bee9b63de",
+    "name": "Tenant Service - Hierarchy & Lifecycle",
+    "description": "Valida criação de hierarquia (Root/Branch) e ciclo de vida completo de cada um.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "39879181"
+  },
+  "item": [
+    {
+      "name": "01. Provision Root Tenant",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.environment.set(\"rootTenantId\", pm.response.json().id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\": \"Root Holding\", \"parentId\": null, \"executor\": \"admin\", \"profile\": {\"taxId\": \"11.111.{{$randomInt}}/0001-00\", \"corporateEmail\": \"root@corp.com\", \"countryCode\": \"BR\", \"city\": \"SP\", \"timezone\": \"America/Sao_Paulo\", \"language\": \"pt\", \"industry\": \"SOFTWARE\"}}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/tenants",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tenants"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "02. Provision Branch Tenant",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.environment.set(\"branchTenantId\", pm.response.json().id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\": \"Branch Office\", \"parentId\": \"{{rootTenantId}}\", \"executor\": \"admin\", \"profile\": {\"taxId\": \"22.222.{{$randomInt}}/0001-00\", \"corporateEmail\": \"branch@corp.com\", \"countryCode\": \"BR\", \"city\": \"RJ\", \"timezone\": \"America/Sao_Paulo\", \"language\": \"pt\", \"industry\": \"SOFTWARE\"}}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/tenants",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tenants"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "03. Suspend & Reactivate Branch",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"executor\": \"admin\", \"reason\": \"Teste suspensão branch\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/tenants/{{branchTenantId}}/suspend",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tenants",
+            "{{branchTenantId}}",
+            "suspend"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "04. Reactivate Branch",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"executor\": \"admin\", \"reason\": \"Teste reativação branch\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/tenants/{{branchTenantId}}/reactivate",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tenants",
+            "{{branchTenantId}}",
+            "reactivate"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05. Suspend Root",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"executor\": \"admin\", \"reason\": \"Teste suspensão root\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/tenants/{{rootTenantId}}/suspend",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tenants",
+            "{{rootTenantId}}",
+            "suspend"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "06. Reactivate Root",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"executor\": \"admin\", \"reason\": \"Teste reativação root\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/tenants/{{rootTenantId}}/reactivate",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tenants",
+            "{{rootTenantId}}",
+            "reactivate"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "07. Check Branch Audit",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/tenants/{{branchTenantId}}/audit",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tenants",
+            "{{branchTenantId}}",
+            "audit"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8081"
+    }
+  ]
+}
