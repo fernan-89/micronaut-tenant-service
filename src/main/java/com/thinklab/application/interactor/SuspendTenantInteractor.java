@@ -54,7 +54,7 @@ public class SuspendTenantInteractor implements SuspendTenantUseCase {
                 .switchIfEmpty(Mono.error(new BusinessException("TENANT_NOT_FOUND",
                         "The requested organization does not exist in the global registry.")))
                 .map(tenant -> tenant.suspend(command.executor()))
-                .flatMap(tenantRepository::save)
+                .flatMap(tenantRepository::update)
                 .flatMap(suspendedTenant -> registerForensicAudit(suspendedTenant, command.executor())
                         .thenReturn(suspendedTenant))
                 .doOnSuccess(tenant -> {

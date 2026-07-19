@@ -47,7 +47,7 @@ public class UpdateTenantProfileInteractor implements UpdateTenantProfileUseCase
                 .switchIfEmpty(Mono.error(new BusinessException("TENANT_NOT_FOUND",
                         "The target organization was not found in the global registry.")))
                 .map(tenant -> tenant.updateProfile(command.profile(), command.executor()))
-                .flatMap(tenantRepository::save)
+                .flatMap(tenantRepository::update)
                 .flatMap(updatedTenant -> registerForensicAudit(updatedTenant, command.executor())
                         .thenReturn(updatedTenant))
                 .doOnSuccess(tenant -> {

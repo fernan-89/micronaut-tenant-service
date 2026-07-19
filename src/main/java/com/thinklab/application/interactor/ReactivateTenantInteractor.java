@@ -69,7 +69,7 @@ public class ReactivateTenantInteractor implements ReactivateTenantUseCase {
                 .switchIfEmpty(Mono.error(new BusinessException("TENANT_NOT_FOUND",
                         "The requested organization does not exist in the global registry.")))
                 .map(tenant -> tenant.reactivate(command.executor()))
-                .flatMap(tenantRepository::save)
+                .flatMap(tenantRepository::update)
                 .flatMap(reactivatedTenant -> registerForensicAudit(reactivatedTenant, command.executor())
                         .thenReturn(reactivatedTenant))
                 .doOnSuccess(tenant -> log.info("[ACTION: REACTIVATE_TENANT] - Tenant [{}] successfully restored to ACTIVE status.",
