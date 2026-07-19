@@ -46,7 +46,7 @@ COPY --from=builder /home/gradle/src/build/libs/*-all.jar app.jar
 ENV JAVA_OPTS="-Xmx512m -XX:+UseContainerSupport"
 
 # Expose the standard Micronaut application port
-EXPOSE 8080
+EXPOSE 8081
 
 # Use a shell wrapper for the entrypoint to allow for environment variable
 # expansion (e.g., JAVA_OPTS) during container startup.
